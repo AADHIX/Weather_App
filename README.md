@@ -7,10 +7,10 @@ A production-grade, full-featured Weather Application built with **Flutter**, **
 
 Below are screenshots of the app — Image 1 and Image 2. Add the corresponding image files to `assets/images/` (or update the paths below) so they render on GitHub.
 
-![Login Screen — Image 1](assets/images/screenshot_login.png)
-
-![Home Screen — Image 2](assets/images/screenshot_home.png)
-
+| <img width="1440" height="3040" alt="Screenshot_20251017_161857" src="https://github.com/user-attachments/assets/98705ecf-5ac8-4b74-badb-c2199f8bfca7" />
+:---: | :---: | :---: |
+<img width="1440" height="3040" alt="Screenshot_20251017_161915" src="https://github.com/user-attachments/assets/ef0eb202-e81b-4775-b8a4-f74e76b9ff20" />
+<img width="1440" height="3040" alt="Screenshot_20251017_161933" src="https://github.com/user-attachments/assets/0e3433ee-c08e-4170-840c-bc22df06485c" />
 
 ## 📸 Key Features
 
