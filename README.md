@@ -1,3 +1,5 @@
+<img width="442" height="792" alt="weather2" src="https://github.com/user-attachments/assets/a3759213-a34f-4612-9dad-dda37f3e3c9e" />
+<img width="462" height="827" alt="weather1" src="https://github.com/user-attachments/assets/93c049b2-18f1-4936-87a6-3440efe325f1" />
 # 🌤️ WeatherWise - Flutter Weather Application
 
 A production-grade, full-featured Weather Application built with **Flutter**, **GetX** for reactive state management, **GoRouter** for declarative navigation with route guards, **Clean Architecture[...] 
