@@ -8,13 +8,13 @@ class LocationResult {
   final bool isSuccess;
 
   LocationResult.success(this.latitude, this.longitude)
-      : error = null,
-        isSuccess = true;
+    : error = null,
+      isSuccess = true;
 
   LocationResult.failure(this.error)
-      : latitude = 0,
-        longitude = 0,
-        isSuccess = false;
+    : latitude = 0,
+      longitude = 0,
+      isSuccess = false;
 }
 
 class LocationService {
@@ -46,22 +46,43 @@ class LocationService {
         );
       }
 
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium,
-          timeLimit: Duration(seconds: 10),
-        ),
-      );
+      try {
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 20),
+          ),
+        );
 
-      AppLogger.success(
-        'Fetched location: lat=${position.latitude}, lon=${position.longitude}',
-        'Location',
-      );
-      return LocationResult.success(position.latitude, position.longitude);
+        AppLogger.success(
+          'Fetched location: lat=${position.latitude}, lon=${position.longitude}',
+          'Location',
+        );
+        return LocationResult.success(position.latitude, position.longitude);
+      } catch (_) {
+        AppLogger.warning(
+          'Current location failed or timed out; trying last known position',
+          'Location',
+        );
+
+        final lastKnown = await Geolocator.getLastKnownPosition();
+        if (lastKnown != null) {
+          AppLogger.success(
+            'Using last known location: lat=${lastKnown.latitude}, lon=${lastKnown.longitude}',
+            'Location',
+          );
+          return LocationResult.success(
+            lastKnown.latitude,
+            lastKnown.longitude,
+          );
+        }
+
+        throw const LocationServiceDisabledException();
+      }
     } catch (e) {
       AppLogger.error('Failed to get current location', e, null, 'Location');
       return LocationResult.failure(
-        'Unable to retrieve current location: ${e.toString()}',
+        'Unable to retrieve current location. Please check GPS signal or search by city name.',
       );
     }
   }

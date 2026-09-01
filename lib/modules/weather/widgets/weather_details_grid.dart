@@ -49,7 +49,9 @@ class WeatherDetailsGrid extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -60,10 +62,7 @@ class WeatherDetailsGrid extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 2),
@@ -71,7 +70,9 @@ class WeatherDetailsGrid extends StatelessWidget {
               subtitle,
               style: TextStyle(
                 fontSize: 11,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           ],
@@ -93,9 +94,10 @@ class WeatherDetailsGrid extends StatelessWidget {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(12),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.35,
+      childAspectRatio: 1.05,
       children: [
         _buildDetailTile(
           context: context,

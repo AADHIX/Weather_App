@@ -21,10 +21,10 @@ class WeatherController extends GetxController {
     required LocationService locationService,
     required ConnectivityService connectivityService,
     required StorageService storageService,
-  })  : _weatherRepository = weatherRepository,
-        _locationService = locationService,
-        _connectivityService = connectivityService,
-        _storageService = storageService;
+  }) : _weatherRepository = weatherRepository,
+       _locationService = locationService,
+       _connectivityService = connectivityService,
+       _storageService = storageService;
 
   // Observable States
   final Rx<WeatherModel?> currentWeather = Rx<WeatherModel?>(null);
@@ -38,6 +38,11 @@ class WeatherController extends GetxController {
   final RxString activeCity = ''.obs;
 
   bool get isOffline => !_connectivityService.isConnected.value;
+  bool get isUsingCachedWeather =>
+      currentWeather.value != null &&
+      (isOffline ||
+          errorMessage.value.contains('current location') ||
+          errorMessage.value.contains('GPS'));
 
   @override
   void onInit() {
@@ -105,19 +110,26 @@ class WeatherController extends GetxController {
     try {
       final locResult = await _locationService.getCurrentLocation();
       if (!locResult.isSuccess) {
-        AppLogger.warning('Location failed: ${locResult.error}', 'WeatherController');
-        // Fallback to default city if no weather loaded yet
+        AppLogger.warning(
+          'Location failed: ${locResult.error}',
+          'WeatherController',
+        );
         if (currentWeather.value == null) {
           await fetchWeatherByCity(ApiConstants.defaultCity);
-        } else if (!isInitial) {
-          Get.snackbar(
-            'Location Notice',
-            locResult.error ?? 'Could not get current location. Showing previous weather.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.amber.shade800,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 4),
-          );
+        } else {
+          errorMessage.value =
+              locResult.error ?? 'Could not get current location.';
+          if (!isInitial || currentWeather.value != null) {
+            Get.snackbar(
+              'Location Notice',
+              locResult.error ??
+                  'Could not get current location. Showing previous weather.',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.amber.shade800,
+              colorText: Colors.white,
+              duration: const Duration(seconds: 4),
+            );
+          }
         }
         return;
       }
@@ -135,9 +147,17 @@ class WeatherController extends GetxController {
       forecast.value = forecastData;
       activeCity.value = weather.cityName;
       errorMessage.value = '';
-      AppLogger.success('Fetched weather by location for: ${weather.cityName}', 'WeatherController');
+      AppLogger.success(
+        'Fetched weather by location for: ${weather.cityName}',
+        'WeatherController',
+      );
     } catch (e) {
-      AppLogger.error('Error fetching weather by location', e, null, 'WeatherController');
+      AppLogger.error(
+        'Error fetching weather by location',
+        e,
+        null,
+        'WeatherController',
+      );
       _handleFetchError(e);
     } finally {
       isLoading.value = false;
@@ -146,7 +166,10 @@ class WeatherController extends GetxController {
     }
   }
 
-  Future<bool> fetchWeatherByCity(String cityName, {bool isInitial = false}) async {
+  Future<bool> fetchWeatherByCity(
+    String cityName, {
+    bool isInitial = false,
+  }) async {
     if (cityName.trim().isEmpty) return false;
 
     if (!isInitial) {
@@ -155,8 +178,12 @@ class WeatherController extends GetxController {
     }
 
     try {
-      final weather = await _weatherRepository.getCurrentWeatherByCity(cityName.trim());
-      final forecastData = await _weatherRepository.getForecastByCity(cityName.trim());
+      final weather = await _weatherRepository.getCurrentWeatherByCity(
+        cityName.trim(),
+      );
+      final forecastData = await _weatherRepository.getForecastByCity(
+        cityName.trim(),
+      );
 
       currentWeather.value = weather;
       forecast.value = forecastData;
@@ -166,7 +193,12 @@ class WeatherController extends GetxController {
       AppLogger.success('Fetched weather for: $cityName', 'WeatherController');
       return true;
     } catch (e) {
-      AppLogger.error('Error fetching weather by city: $cityName', e, null, 'WeatherController');
+      AppLogger.error(
+        'Error fetching weather by city: $cityName',
+        e,
+        null,
+        'WeatherController',
+      );
       _handleFetchError(e);
       return false;
     } finally {
@@ -194,7 +226,10 @@ class WeatherController extends GetxController {
       activeCity.value = 'San Francisco';
     }
 
-    final msg = error.toString().replaceAll('ApiException: ', '').replaceAll('Exception: ', '');
+    final msg = error
+        .toString()
+        .replaceAll('ApiException: ', '')
+        .replaceAll('Exception: ', '');
     errorMessage.value = msg;
 
     Get.snackbar(
@@ -223,7 +258,10 @@ class WeatherController extends GetxController {
     if (newKey.trim().isEmpty) {
       await _storageService.remove(AppConstants.keyCustomApiKey);
     } else {
-      await _storageService.setString(AppConstants.keyCustomApiKey, newKey.trim());
+      await _storageService.setString(
+        AppConstants.keyCustomApiKey,
+        newKey.trim(),
+      );
     }
     refreshWeather();
   }

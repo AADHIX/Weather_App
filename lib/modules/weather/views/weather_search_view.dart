@@ -91,32 +91,38 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Obx(() => IconButton.filled(
-                          onPressed: _weatherController.isLoading.value
-                              ? null
-                              : () {
-                                  if (_formKey.currentState?.validate() ?? false) {
-                                    _performSearch(_searchController.text);
-                                  }
-                                },
-                          style: IconButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            padding: const EdgeInsets.all(16),
+                    Obx(
+                      () => IconButton.filled(
+                        onPressed: _weatherController.isLoading.value
+                            ? null
+                            : () {
+                                if (_formKey.currentState?.validate() ??
+                                    false) {
+                                  _performSearch(_searchController.text);
+                                }
+                              },
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          icon: _weatherController.isLoading.value
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.arrow_forward_rounded, color: Colors.white),
-                        )),
+                          padding: const EdgeInsets.all(16),
+                        ),
+                        icon: _weatherController.isLoading.value
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                              ),
+                      ),
+                    ),
                   ],
                 ),
               ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.1, end: 0),
@@ -124,19 +130,21 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
 
               // Search History & Popular Destinations
               Expanded(
-                child: Obx(() => SearchHistoryList(
-                      history: _weatherController.searchHistory,
-                      onSelectCity: (city) {
-                        _searchController.text = city;
-                        _performSearch(city);
-                      },
-                      onDeleteItem: (city) {
-                        _weatherController.removeSearchHistoryItem(city);
-                      },
-                      onClearAll: () {
-                        _weatherController.clearAllSearchHistory();
-                      },
-                    )).animate().fadeIn(delay: 150.ms),
+                child: Obx(
+                  () => SearchHistoryList(
+                    history: _weatherController.searchHistory.toList(),
+                    onSelectCity: (city) {
+                      _searchController.text = city;
+                      _performSearch(city);
+                    },
+                    onDeleteItem: (city) {
+                      _weatherController.removeSearchHistoryItem(city);
+                    },
+                    onClearAll: () {
+                      _weatherController.clearAllSearchHistory();
+                    },
+                  ),
+                ).animate().fadeIn(delay: 150.ms),
               ),
             ],
           ),

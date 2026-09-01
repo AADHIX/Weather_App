@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../app/theme/app_colors.dart';
+import '../../../widgets/common/cached_status_chip.dart';
 import '../../../widgets/common/error_state_widget.dart';
 import '../../../widgets/common/offline_banner.dart';
 import '../../../widgets/dialogs/api_key_dialog.dart';
@@ -67,8 +68,13 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                user != null ? 'Hello, ${user.name.split(" ").first}' : 'WeatherWise',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                user != null
+                    ? 'Hello, ${user.name.split(" ").first}'
+                    : 'WeatherWise',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
               const Text(
                 'Live Forecast',
@@ -79,19 +85,21 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
         }),
         actions: [
           // GPS Location Trigger
-          Obx(() => IconButton(
-                tooltip: 'Get GPS Location Weather',
-                icon: _weatherController.isLocationLoading.value
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.my_location_rounded),
-                onPressed: _weatherController.isLocationLoading.value
-                    ? null
-                    : () => _weatherController.fetchWeatherByLocation(),
-              )),
+          Obx(
+            () => IconButton(
+              tooltip: 'Get GPS Location Weather',
+              icon: _weatherController.isLocationLoading.value
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.my_location_rounded),
+              onPressed: _weatherController.isLocationLoading.value
+                  ? null
+                  : () => _weatherController.fetchWeatherByLocation(),
+            ),
+          ),
 
           // Search Screen Navigator
           IconButton(
@@ -101,23 +109,27 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
           ),
 
           // Theme Toggle Button
-          Obx(() => IconButton(
-                tooltip: 'Toggle Dark/Light Mode',
-                icon: Icon(
-                  _weatherController.isDarkMode.value
-                      ? Icons.light_mode_rounded
-                      : Icons.dark_mode_rounded,
-                  color: _weatherController.isDarkMode.value
-                      ? Colors.amber
-                      : AppColors.primary,
-                ),
-                onPressed: _weatherController.toggleTheme,
-              )),
+          Obx(
+            () => IconButton(
+              tooltip: 'Toggle Dark/Light Mode',
+              icon: Icon(
+                _weatherController.isDarkMode.value
+                    ? Icons.light_mode_rounded
+                    : Icons.dark_mode_rounded,
+                color: _weatherController.isDarkMode.value
+                    ? Colors.amber
+                    : AppColors.primary,
+              ),
+              onPressed: _weatherController.toggleTheme,
+            ),
+          ),
 
           // More Options Menu (API Key / Logout)
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert_rounded),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             onSelected: (value) {
               if (value == 'api_key') {
                 _openApiKeyDialog();
@@ -140,7 +152,11 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout_rounded, color: AppColors.error, size: 20),
+                    Icon(
+                      Icons.logout_rounded,
+                      color: AppColors.error,
+                      size: 20,
+                    ),
                     SizedBox(width: 12),
                     Text('Logout', style: TextStyle(color: AppColors.error)),
                   ],
@@ -154,9 +170,11 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
         child: Column(
           children: [
             // Offline Indicator
-            Obx(() => _weatherController.isOffline
-                ? const OfflineBanner()
-                : const SizedBox.shrink()),
+            Obx(
+              () => _weatherController.isOffline
+                  ? const OfflineBanner()
+                  : const SizedBox.shrink(),
+            ),
 
             // Main Weather Content
             Expanded(
@@ -183,19 +201,38 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
                   onRefresh: _weatherController.refreshWeather,
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Current Weather Card
-                        CurrentWeatherCard(
-                          weather: weather,
-                          onLocationTap: () => _weatherController.fetchWeatherByLocation(),
-                        ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.05, end: 0),
+                        Stack(
+                          children: [
+                            CurrentWeatherCard(
+                                  weather: weather,
+                                  onLocationTap: () => _weatherController
+                                      .fetchWeatherByLocation(),
+                                )
+                                .animate()
+                                .fadeIn(duration: 400.ms)
+                                .slideY(begin: 0.05, end: 0),
+                            if (_weatherController.isOffline ||
+                                _weatherController.isUsingCachedWeather)
+                              Positioned(
+                                top: 16,
+                                right: 16,
+                                child: const CachedStatusChip(),
+                              ),
+                          ],
+                        ),
                         const SizedBox(height: 20),
 
                         // Hourly Forecast
-                        if (forecast != null && forecast.next24Hours.isNotEmpty) ...[
+                        if (forecast != null &&
+                            forecast.next24Hours.isNotEmpty) ...[
                           HourlyForecastList(hourlyItems: forecast.next24Hours)
                               .animate()
                               .fadeIn(delay: 150.ms)
@@ -204,7 +241,8 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
                         ],
 
                         // 5-Day Forecast
-                        if (forecast != null && forecast.fiveDayForecast.isNotEmpty) ...[
+                        if (forecast != null &&
+                            forecast.fiveDayForecast.isNotEmpty) ...[
                           ForecastList(dailyItems: forecast.fiveDayForecast)
                               .animate()
                               .fadeIn(delay: 250.ms)
@@ -215,13 +253,16 @@ class _WeatherHomeViewState extends State<WeatherHomeView> {
                         // Weather Details Grid
                         Row(
                           children: [
-                            const Icon(Icons.analytics_outlined, size: 18, color: AppColors.primary),
+                            const Icon(
+                              Icons.analytics_outlined,
+                              size: 18,
+                              color: AppColors.primary,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'Weather Details',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
