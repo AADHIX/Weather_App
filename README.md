@@ -1,7 +1,7 @@
 
 # 🌤️ WeatherWise - Flutter Weather Application
 
-A production-grade, full-featured Weather Application built with **Flutter**, **GetX** for reactive state management, **GoRouter** for declarative navigation with route guards, **Clean Architecture[...] 
+A production-grade, full-featured Weather Application built with **Flutter**, **GetX** for reactive state management, **GoRouter** for declarative navigation with route guards, 
 
 ---
 ## 📸 Images
