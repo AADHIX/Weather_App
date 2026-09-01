@@ -226,10 +226,16 @@ class WeatherController extends GetxController {
       activeCity.value = 'San Francisco';
     }
 
-    final msg = error
+    String msg = error
         .toString()
         .replaceAll('ApiException: ', '')
         .replaceAll('Exception: ', '');
+
+    if (msg.contains('Unable to reach weather server')) {
+      msg =
+          'Unable to reach weather server. Showing cached weather while connection is restored.';
+    }
+
     errorMessage.value = msg;
 
     Get.snackbar(

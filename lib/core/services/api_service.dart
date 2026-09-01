@@ -17,17 +17,20 @@ class ApiException implements Exception {
 }
 
 class NetworkException extends ApiException {
-  NetworkException([super.message = 'No Internet connection. Please check your network.']);
+  NetworkException([
+    super.message = 'No Internet connection. Please check your network.',
+  ]);
 }
 
 class NotFoundException extends ApiException {
-  NotFoundException([super.message = 'Location not found. Please try another search.'])
-      : super(statusCode: 404);
+  NotFoundException([
+    super.message = 'Location not found. Please try another search.',
+  ]) : super(statusCode: 404);
 }
 
 class UnauthorizedException extends ApiException {
   UnauthorizedException([super.message = 'Invalid or missing API key.'])
-      : super(statusCode: 401);
+    : super(statusCode: 401);
 }
 
 class ApiService {
@@ -40,9 +43,9 @@ class ApiService {
     Map<String, String>? queryParams,
     Map<String, String>? headers,
   }) async {
-    final uri = Uri.parse('${ApiConstants.baseUrl}$endpoint').replace(
-      queryParameters: queryParams,
-    );
+    final uri = Uri.parse(
+      '${ApiConstants.baseUrl}$endpoint',
+    ).replace(queryParameters: queryParams);
 
     AppLogger.info('GET Request: $uri', 'API');
 
@@ -67,7 +70,9 @@ class ApiService {
       throw ApiException('Connection timed out. Please try again.');
     } on http.ClientException catch (e) {
       AppLogger.error('ClientException on $uri', e, null, 'API');
-      throw NetworkException('Unable to reach weather server.');
+      throw NetworkException(
+        'Unable to reach weather server. Check your internet connection and try again.',
+      );
     } catch (e) {
       if (e is ApiException) rethrow;
       AppLogger.error('Unexpected error on $uri', e, null, 'API');
@@ -98,17 +103,29 @@ class ApiService {
 
     switch (response.statusCode) {
       case 401:
-        throw UnauthorizedException('Invalid API Key. Please configure a valid OpenWeatherMap key.');
+        throw UnauthorizedException(
+          'Invalid API Key. Please configure a valid OpenWeatherMap key.',
+        );
       case 404:
         throw NotFoundException('City or location not found.');
       case 429:
-        throw ApiException('API rate limit exceeded. Please try again later.', statusCode: 429);
+        throw ApiException(
+          'API rate limit exceeded. Please try again later.',
+          statusCode: 429,
+        );
       case 500:
       case 502:
       case 503:
-        throw ApiException('Weather service is currently unavailable. Please try later.', statusCode: response.statusCode);
+        throw ApiException(
+          'Weather service is currently unavailable. Please try later.',
+          statusCode: response.statusCode,
+        );
       default:
-        throw ApiException(message, statusCode: response.statusCode, details: body);
+        throw ApiException(
+          message,
+          statusCode: response.statusCode,
+          details: body,
+        );
     }
   }
 }
