@@ -1,5 +1,4 @@
-<img width="442" height="792" alt="weather2" src="https://github.com/user-attachments/assets/a3759213-a34f-4612-9dad-dda37f3e3c9e" />
-<img width="462" height="827" alt="weather1" src="https://github.com/user-attachments/assets/93c049b2-18f1-4936-87a6-3440efe325f1" />
+
 # 🌤️ WeatherWise - Flutter Weather Application
 
 A production-grade, full-featured Weather Application built with **Flutter**, **GetX** for reactive state management, **GoRouter** for declarative navigation with route guards, **Clean Architecture[...] 
@@ -7,12 +6,11 @@ A production-grade, full-featured Weather Application built with **Flutter**, **
 ---
 ## 📸 Images
 
-Below are screenshots of the app — Image 1 and Image 2. Add the corresponding image files to `assets/images/` (or update the paths below) so they render on GitHub.
+Below are screenshots of the app — ui 1 and ui 2. Add the corresponding image files to `assets/images/` (or update the paths below) so they render on GitHub.
 
-| <img width="1440" height="3040" alt="Screenshot_20251017_161857" src="https://github.com/user-attachments/assets/98705ecf-5ac8-4b74-badb-c2199f8bfca7" />
-:---: | :---: | :---: |
-<img width="1440" height="3040" alt="Screenshot_20251017_161915" src="https://github.com/user-attachments/assets/ef0eb202-e81b-4775-b8a4-f74e76b9ff20" />
-<img width="1440" height="3040" alt="Screenshot_20251017_161933" src="https://github.com/user-attachments/assets/0e3433ee-c08e-4170-840c-bc22df06485c" />
+<img width="1440" height="3040" alt="login" src="https://github.com/user-attachments/assets/a3759213-a34f-4612-9dad-dda37f3e3c9e" />
+<img width="1440" height="3040" alt="weather prediction" src="https://github.com/user-attachments/assets/93c049b2-18f1-4936-87a6-3440efe325f1" />
+
 
 ## 📸 Key Features
 
