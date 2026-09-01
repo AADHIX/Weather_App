@@ -1,10 +1,15 @@
 # 🌤️ WeatherWise - Flutter Weather Application
 
-A production-grade, full-featured Weather Application built with **Flutter**, **GetX** for reactive state management, **GoRouter** for declarative navigation with route guards, **Clean Architecture**, and **Material Design 3**.
+A production-grade, full-featured Weather Application built with **Flutter**, **GetX** for reactive state management, **GoRouter** for declarative navigation with route guards, **Clean Architecture[...] 
 
 ---
-## 📸 images  
+## 📸 Images
 
+Below are screenshots of the app — Image 1 and Image 2. Add the corresponding image files to `assets/images/` (or update the paths below) so they render on GitHub.
+
+![Login Screen — Image 1](assets/images/screenshot_login.png)
+
+![Home Screen — Image 2](assets/images/screenshot_home.png)
 
 
 ## 📸 Key Features
@@ -100,7 +105,7 @@ lib/
 │       │   └── weather_model.dart
 │       ├── views/
 │       │   ├── weather_home_view.dart
-│       │   └── weather_search_view.dart
+│       │   │   └── weather_search_view.dart
 │       └── widgets/
 │           ├── current_weather_card.dart
 │           ├── forecast_list.dart
